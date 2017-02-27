@@ -6,7 +6,6 @@ ENV KOTLIN_PLUGIN_URL https://plugins.jetbrains.com/files/6954/31110/kotlin-plug
 ENV CHECK_PLUGIN_URL https://github.com/lukaville/android-studio-project-check/releases/download/v0.1/android-studio-project-check.zip
 ENV IDEA_INSPECTOR_VERSION 0e37430
 ENV ANDROID_VERSION 25
-ENV GROOVY_VERSION 2.4.8
 
 RUN apt-get update
 
@@ -30,20 +29,6 @@ RUN wget $ANDROID_SDK_URL -O android-sdk.zip && \
 ENV ANDROID_HOME /opt/android-sdk/
 ENV PATH ${PATH}:${ANDROID_HOME}/tools/:${ANDROID_HOME}/platform-tools
 RUN echo "y" | android update sdk --all --no-ui --filter "platform-tools,android-$ANDROID_VERSION"
-
-# Groovy
-RUN wget https://dl.bintray.com/groovy/maven/apache-groovy-binary-${GROOVY_VERSION}.zip -O groovy.zip && \
-    mkdir -p /opt/groovy && \
-    unzip groovy.zip -d /opt/groovy && \
-    ln -s /opt/groovy/groovy-${GROOVY_VERSION} /opt/groovy/current && \
-    rm groovy.zip
-
-ENV PATH $PATH:/opt/groovy/current/bin
-
-# IDEA CLI inspector
-RUN git clone https://github.com/bentolor/idea-cli-inspector.git idea-cli-inspector && \
-    cd idea-cli-inspector && \
-    git reset --hard $IDEA_INSPECTOR_VERSION
 
 COPY run.sh /
 ENTRYPOINT ["/run.sh"]
